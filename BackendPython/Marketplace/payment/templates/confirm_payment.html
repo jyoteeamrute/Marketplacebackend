@@ -1,0 +1,78 @@
+<!-- templates/confirm_payment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm Payment</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    #card-element { border: 1px solid #ccc; padding: 10px; border-radius: 4px; }
+    #submit { margin-top: 15px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Subscribe Now</h2>
+  <form id="payment-form">
+    <div id="card-element"><!--Stripe.js injects the Card Element here--></div>
+    <button id="submit">Pay</button>
+    <div id="payment-message"></div>
+  </form>
+
+  <script>
+    const stripe = Stripe("{{ stripe_publishable_key }}");
+    const elements = stripe.elements();
+    const card = elements.create("card");
+    card.mount("#card-element");
+
+    const form = document.getElementById("payment-form");
+    const message = document.getElementById("payment-message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Call backend to create PaymentIntent
+      const response = await fetch("/api/v1/payment/create-payment-intent/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userProfessionalId: "{{ user_professional_id }}",
+          subscriptionId: "{{ subscription_id }}",
+          subscriptionType: "{{ subscription_type }}"
+        })
+      });
+
+      const data = await response.json();
+
+      if (!data.clientSecret) {
+        message.textContent = data.message || "Error creating payment intent";
+        return;
+      }
+
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: card
+        }
+      });
+
+      if (result.error) {
+        message.textContent = result.error.message;
+      } else {
+        if (result.paymentIntent.status === "succeeded") {
+          message.textContent = "Payment succeeded!";
+          // Optional: Call /verify/ to store the transaction in DB
+          fetch("/api/v1/payment/verify/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              paymentIntentId: result.paymentIntent.id,
+              userProfessionalId: "{{ user_professional_id }}",
+              subscriptionId: "{{ subscription_id }}",
+              subscriptionType: "{{ subscription_type }}"
+            })
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

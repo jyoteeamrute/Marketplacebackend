@@ -1,0 +1,78 @@
+# Ignore node_modules in Backend, Frontend, and Admin
+/Backend/node_modules/
+/Frontend/node_modules/
+/Admin/node_modules/
+# Ignore Python virtual environments
+BackendPython/env/
+BackendPython/venv/
+BackendPython/Marketplace/env/
+BackendPython/Marketplace/venv/
+BackendPython/dummy/
+BackendPython/Marketplace/.env
+BackendPython/market_env/
+BackendPython/marketplace_env/
+BackendPython/Marketplace/company_images/
+# Ignore all migration files
+**/migrations/*.py
+# But do not ignore __init__.py files
+**/migrations/__init__.py
+
+# Ignore __pycache__ directories
+__pycache__/
+# Ignore Django migrations
+# Ignore migrations file
+#*/migrations/*.py
+**/migrations/*.pyc
+#database
+db.sqlite3
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+# Static and media files (if applicable)
+staticfiles/
+media/
+
+
+# Ignore log files
+*.log
+error.log
+combined.log
+
+# Ignore .env files (optional, if you use environment variables)
+.env
+.env.local
+.env.production
+.env.development
+.env.staging
+
+# Ignore temporary files and IDE configs
+*.swp
+*.swo
+.idea/
+.vscode/
+*.tmp
+
+# Ignore specific IDE/project files
+.vscode/
+*.code-workspace
+
+# Build output
+/Frontend/.next/
+/Frontend/out/
+/Admin/.next/
+/Admin/out/
+node_modules/
+node_modules/
+
+#files
+BackendPython/Marketplace/reels_folders/Reel Save/
+
+BackendPython/Marketplace/logs/*
+
+
